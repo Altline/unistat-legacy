@@ -149,7 +149,7 @@ public class GuiGeneralStats {
 			paidSeries.setName("Vrijednost bez subvencije");
 			subsidySeries.setName("Iznos subvencije");
 
-			for (LocalDate i = bills.get(0).getDateTime().toLocalDate(); i.isBefore(LocalDate.now().plusDays(1)); i = i.plusMonths(1)) {
+			for (LocalDate i = bills.get(0).getDateTime().toLocalDate(); i.isBefore(LocalDate.now().plusMonths(1)); i = i.plusMonths(1)) {
 				final YearMonth yearMonth = YearMonth.from(i);
 
 				float cost = (float) bills.stream()
