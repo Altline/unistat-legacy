@@ -1,0 +1,521 @@
+
+/* 
+ * modena.css code for reference:
+ * https://gist.github.com/maxd/63691840fc372f22f470
+ */
+ 
+/*
+ * Copyright (c) 2009, 2017, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+/*
+ *  Modena
+ *
+ *  This is the second generation theme for JavaFX after Caspian.
+ */
+
+/*******************************************************************************
+ *                                                                             *
+ * THEMING INSTRUCTIONS                                                       *
+ *                                                                             *
+ *******************************************************************************
+TODO: Explain here how theming works:
+     * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+     * -fx-text-background-color for text on top of -fx-background
+     * -fx-text-inner-color for text on top of -fx-control-inner-color
+     * -fx-selection-bar-text for text on top of -fx-selection-bar
+RESIZING FOR DIFFERENT SCREEN DPI
+-------------------------------
+When the screen DPI changes Windows will use a different font size by default.
+The default is 12px and can change to 15px or 18px depending on user
+preference or screen DPI. On Mac the default is 13px and embedded will depend
+on hardware. To make UI controls scale and be the right proportions for each of
+these font sizes we base the padding (which controls size of control) on the
+font size. This is done using the CSS measurement unit of a "em" where
+(1em = font size). The default sizes are based on Windows default of 12px, as
+a quick reference here are common px sizes in em units on windows.
+Windows 12px -> em units    -> Mac 13px      |
+----------------------------------------
+     1px     -> 0.083333em  -> 1.08px ~ 2px
+     2px     -> 0.166667em  -> 2.16px ~ 3px
+     3px  = 0.25em
+     4px  = 0.333333em
+     5px  = 0.416667em
+     6px  = 0.5em
+     7px  = 0.583333em
+     8px  = 0.666667em
+     9px  = 0.75em
+    10px  = 0.833333em
+    11px  = 0.916667em
+    12px  = 1em
+IMPORTANT: Not all sizes are scaled with em units only padding. All borders and
+background insets are still in pixels. Also any padding where it has to match up
+is being used to size a border should also be in pixels.
+ ******************************************************************************/
+
+/*******************************************************************************
+ *                                                                             *
+ * CSS Styles for core infrastructure bits.  The .root section provides the    *
+ * overall default colors used by the rest of the sections.                    *
+ *                                                                             *
+ ******************************************************************************/
+
+.root {
+    /***************************************************************************
+     *                                                                         *
+     * The main color palette from which the rest of the colors are derived.   *
+     *                                                                         *
+     **************************************************************************/
+
+    /* Base color for objects.  Instead of using
+     * -fx-base directly, the sections in this file will typically use -fx-color.
+     */
+    -fx-base: #f99;
+
+    /* Lighter version of -fx-base used for the background of windows.  See also
+     * -fx-text-background-color, which should be used as the -fx-text-fill
+     * value for text painted on top of backgrounds colored with -fx-background.
+     */
+    -fx-background: derive(-fx-base, 105.0%);
+
+    /* Used for the inside of text boxes, password boxes, lists, trees, and
+     * tables.  See also -fx-text-inner-color, which should be used as the
+     * -fx-text-fill value for text painted on top of backgrounds colored
+     * with -fx-control-inner-background.
+     */
+    -fx-control-inner-background: derive(-fx-base,92.0%);
+    /* Version of -fx-control-inner-background for alternative rows */
+    -fx-control-inner-background-alt: derive(-fx-control-inner-background,-3%);
+
+    /* One of these colors will be chosen based upon a ladder calculation
+     * that uses the brightness of a background color.  Instead of using these
+     * colors directly as -fx-text-fill values, the sections in this file should
+     * use a derived color to match the background in use.  See also:
+     *
+     * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+     * -fx-text-background-color for text on top of -fx-background
+     * -fx-text-inner-color for text on top of -fx-control-inner-color
+     * -fx-selection-bar-text for text on top of -fx-selection-bar
+     */
+    -fx-dark-text-color: black;
+    -fx-mid-text-color: #333;
+    -fx-light-text-color: white;
+
+    /* Color for highlighting/accenting objects.  For example: selected
+     * text; selected items in menus, lists, trees, and tables; progress bars */
+    -fx-accent: #ffaf4b;
+
+    /* Default buttons color, this is similar to accent but more subtle */
+    -fx-default-button: #ffa062;
+
+    /* A bright blue for the focus indicator of objects. Typically used as the
+     * first color in -fx-background-color for the "focused" pseudo-class. Also
+     * typically used with insets of -1.4 to provide a glowing effect.
+     */
+    -fx-focus-color: #ff7043;
+    -fx-faint-focus-color: #ff704322;
+
+    /* The color that is used in styling controls. The default value is based
+     * on -fx-base, but is changed by pseudoclasses to change the base color.
+     * For example, the "hover" pseudoclass will typically set -fx-color to
+     * -fx-hover-base (see below) and the "armed" pseudoclass will typically
+     * set -fx-color to -fx-pressed-base.
+     */
+    -fx-color: -fx-base;
+
+    /* Chart Color Palette */
+    CHART_COLOR_1: #f3622d;
+    CHART_COLOR_2: #fba71b;
+    CHART_COLOR_3: #57b757;
+    CHART_COLOR_4: #41a9c9;
+    CHART_COLOR_5: #4258c9;
+    CHART_COLOR_6: #9a42c8;
+    CHART_COLOR_7: #c84164;
+    CHART_COLOR_8: #888888;
+    /* Chart Color Palette Semi-Transparent
+     * These are used by charts that need semi transparent versions of the above colors, such as BubbleChart. They
+     * are exactly the same colors as above just with alpha
+     *
+     * 20% opacity
+     */
+    CHART_COLOR_1_TRANS_20: #f3622d33;
+    CHART_COLOR_2_TRANS_20: #fba71b33;
+    CHART_COLOR_3_TRANS_20: #57b75733;
+    CHART_COLOR_4_TRANS_20: #41a9c933;
+    CHART_COLOR_5_TRANS_20: #4258c933;
+    CHART_COLOR_6_TRANS_20: #9a42c833;
+    CHART_COLOR_7_TRANS_20: #c8416433;
+    CHART_COLOR_8_TRANS_20: #88888833;
+    /* 70% opacity */
+    CHART_COLOR_1_TRANS_70: #f3622db3;
+    CHART_COLOR_2_TRANS_70: #fba71bb3;
+    CHART_COLOR_3_TRANS_70: #57b757b3;
+    CHART_COLOR_4_TRANS_70: #41a9c9b3;
+    CHART_COLOR_5_TRANS_70: #4258c9b3;
+    CHART_COLOR_6_TRANS_70: #9a42c8b3;
+    CHART_COLOR_7_TRANS_70: #c84164b3;
+    CHART_COLOR_8_TRANS_70: #888888b3;
+
+    /***************************************************************************
+     *                                                                         *
+     * Colors that are derived from the main color palette.                    *
+     *                                                                         *
+     **************************************************************************/
+
+    /* A little lighter than -fx-base and used as the -fx-color for the
+     * "hovered" pseudoclass state.
+     */
+    -fx-hover-base: ladder(
+        -fx-base,
+        derive(-fx-base,20.0%) 20.0%,
+        derive(-fx-base,30.0%) 35.0%,
+        derive(-fx-base,40.0%) 50.0%
+     );
+
+    /* A little darker than -fx-base and used as the -fx-color for the
+     * "armed" pseudoclass state.
+     *
+     * TODO: should this be renamed to -fx-armed-base?
+     */
+    -fx-pressed-base: derive(-fx-base,-15.0%);
+
+    /* The color to use for -fx-text-fill when text is to be painted on top of
+     * a background filled with the -fx-background color.
+     */
+    -fx-text-background-color: ladder(
+        -fx-background,
+        -fx-light-text-color 45.0%,
+        -fx-dark-text-color  46.0%,
+        -fx-dark-text-color  59.0%,
+        -fx-mid-text-color   60.0%
+    );
+
+    /* A little darker than -fx-color and used to draw boxes around objects such
+     * as progress bars, scroll bars, scroll panes, trees, tables, and lists.
+     */
+    -fx-box-border: ladder(
+        -fx-color,
+        black 20.0%,
+        derive(-fx-color,-15.0%) 30.0%
+    );
+
+    /* Darker than -fx-background and used to draw boxes around text boxes and
+     * password boxes.
+     */
+    -fx-text-box-border: ladder(
+        -fx-background,
+        black 10.0%,
+        derive(-fx-background, -15.0%) 30.0%
+    );
+
+    /* Lighter than -fx-background and used to provide a small highlight when
+     * needed on top of -fx-background. This is never a shadow in Modena but
+     * keep -fx-shadow-highlight-color name to be compatible with Caspian.
+     */
+    -fx-shadow-highlight-color: ladder(
+        -fx-background,
+        rgba(255.0,255.0,255.0,0.07) 0.0%,
+        rgba(255.0,255.0,255.0,0.07) 20.0%,
+        rgba(255.0,255.0,255.0,0.07) 70.0%,
+        rgba(255.0,255.0,255.0,0.7) 90.0%,
+        rgba(255.0,255.0,255.0,0.75) 100.0%
+      );
+
+    /* A gradient that goes from a little darker than -fx-color on the top to
+     * even more darker than -fx-color on the bottom.  Typically is the second
+     * color in the -fx-background-color list as the small thin border around
+     * a control. It is typically the same size as the control (i.e., insets
+     * are 0).
+     */
+    -fx-outer-border: derive(-fx-color,-23.0%);
+
+    /* A gradient that goes from a bit lighter than -fx-color on the top to
+     * a little darker at the bottom.  Typically is the third color in the
+     * -fx-background-color list as a thin highlight inside the outer border.
+     * Insets are typically 1.
+     */
+    -fx-inner-border: linear-gradient(to bottom,
+                ladder(
+                    -fx-color,
+                    derive(-fx-color,30.0%) 0.0%,
+                    derive(-fx-color,20.0%) 40.0%,
+                    derive(-fx-color,25.0%) 60.0%,
+                    derive(-fx-color,55.0%) 80.0%,
+                    derive(-fx-color,55.0%) 90.0%,
+                    derive(-fx-color,75.0%) 100.0%
+                ),
+                ladder(
+                    -fx-color,
+                    derive(-fx-color,20.0%) 0.0%,
+                    derive(-fx-color,10.0%) 20.0%,
+                    derive(-fx-color,5.0%) 40.0%,
+                    derive(-fx-color,-2.0%) 60.0%,
+                    derive(-fx-color,-5.0%) 100.0%
+                ));
+    -fx-inner-border-horizontal: linear-gradient(to right, derive(-fx-color,55.0%), derive(-fx-color,-5.0%));
+    -fx-inner-border-bottomup: linear-gradient(to top, derive(-fx-color,55.0%), derive(-fx-color,-5.0%));
+
+    /* A gradient that goes from a little lighter than -fx-color at the top to
+     * a little darker than -fx-color at the bottom and is used to fill the
+     * body of many controls such as buttons.
+     */
+    -fx-body-color: linear-gradient(to bottom,
+            ladder(
+                -fx-color,
+                derive(-fx-color,8.0%) 75.0%,
+                derive(-fx-color,10.0%) 80.0%
+            ),
+            derive(-fx-color,-8.0%));
+    -fx-body-color-bottomup: linear-gradient(to top, derive(-fx-color,10.0%) ,derive(-fx-color,-6.0%));
+    -fx-body-color-to-right: linear-gradient(to right, derive(-fx-color,10.0%) ,derive(-fx-color,-6.0%));
+
+    /* The color to use as -fx-text-fill when painting text on top of
+     * backgrounds filled with -fx-base, -fx-color, and -fx-body-color.
+     */
+    -fx-text-base-color: ladder(
+        -fx-color,
+        -fx-light-text-color 95.0%,
+        -fx-mid-text-color   97.0%,
+        -fx-dark-text-color  99.0%
+    );
+
+    /* The color to use as -fx-text-fill when painting text on top of
+     * backgrounds filled with -fx-control-inner-background.
+     */
+    -fx-text-inner-color: ladder(
+        -fx-control-inner-background,
+        -fx-light-text-color 45.0%,
+        -fx-dark-text-color  46.0%,
+        -fx-dark-text-color  59.0%,
+        -fx-mid-text-color   60.0%
+    );
+
+    /* The color to use for small mark-like objects such as checks on check
+     * boxes, filled in circles in radio buttons, arrows on scroll bars, etc.
+     */
+    -fx-mark-color: ladder(
+        -fx-color,
+        white 30.0%,
+        derive(-fx-color,-63.0%) 31.0%
+    );
+
+    /* The small thin light "shadow" for mark-like objects. Typically used in
+     * conjunction with -fx-mark-color with an insets of 1 0 -1 0. */
+    -fx-mark-highlight-color: ladder(
+        -fx-color,
+        derive(-fx-color,80.0%) 60.0%,
+        white 70.0%
+    );
+
+    /* Background for items in list like things such as menus, lists, trees,
+     * and tables. */
+    -fx-selection-bar: -fx-accent;
+
+    /* Background color to use for selection of list cells etc. This is when
+     * the control doesn't have focus or the row of a previously selected item. */
+    -fx-selection-bar-non-focused: lightgrey;
+
+    /* The color to use as -fx-text-fill when painting text on top of
+     * backgrounds filled with -fx-selection-bar.
+     *
+     * TODO: this can be removed
+     */
+    -fx-selection-bar-text: -fx-text-background-color;
+
+    /* These are needed for Popup */
+    -fx-background-color: inherit;
+    -fx-background-radius: inherit;
+    -fx-background-insets: inherit;
+    -fx-padding: inherit;
+
+    /* The color to use in ListView/TreeView/TableView to indicate hover. */
+    -fx-cell-hover-color: #cce3f4;
+
+    /** Focus line for keyboard focus traversal on cell based controls */
+    -fx-cell-focus-inner-border: derive(-fx-selection-bar,30.0%);
+
+    /* The colors to use in Pagination */
+    -fx-page-bullet-border: #acacac;
+    -fx-page-indicator-hover-border: #accee5;
+
+    -fx-focused-text-base-color : ladder(
+        -fx-selection-bar,
+        -fx-light-text-color 45.0%,
+        -fx-dark-text-color 46.0%,
+        -fx-dark-text-color 59.0%,
+        -fx-mid-text-color 60.0%
+    );
+    -fx-focused-mark-color : -fx-focused-text-base-color ;
+
+    /***************************************************************************
+     *                                                                         *
+     * Set the default background color for the scene                          *
+     *                                                                         *
+     **************************************************************************/
+
+    -fx-background-color: -fx-background;
+    
+    
+    
+    -fx-today-color: #A0D4FF;
+    -fx-day-highlight-color: #f1de4a;
+    -fx-selected-bar: #ea4343;
+    
+    -fx-font-size: 14.0;
+}
+
+/* Make popups transparent */
+.root.popup {
+    -fx-background-color: transparent;
+}
+
+/*********************************************************************************** */
+
+
+.jfx-combo-box{
+	-jfx-focus-color: -fx-focus-color;
+    -jfx-unfocus-color: -fx-color;
+}
+
+.jfx-date-picker, .jfx-time-picker {
+	-jfx-default-color: -fx-color;
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.title{
+	-fx-font-size: 16.0;
+	-fx-font-weight: bold;
+}
+
+.sidebar{
+	-fx-background-color: -fx-color;
+}
+
+.sidebar .button{
+	-fx-background-color: derive(-fx-color, -15.0%);
+}
+
+.cancel-button{
+	-fx-base: #aaa;
+}
+
+.nav-button{
+	-fx-font-size: 16.0;
+	-fx-font-weight: bold;
+	-fx-background-color: -fx-color;
+	-fx-background-radius: 0.0;
+}
+
+.nav-button:selected{
+	-fx-background-color: -fx-pressed-base;
+}
+
+
+.calendar {
+    -fx-control-inner-background: white;
+    -fx-control-inner-background-alt: -fx-control-inner-background;
+	-fx-box-border: -fx-color;
+    -fx-focus-color: -fx-color;
+    -fx-faint-focus-color: -fx-color;
+    -fx-border-color: -fx-color;
+    -fx-border-width: 0.0;
+}
+
+.calendar .column-header {
+	-fx-background-color: -fx-color;
+}
+
+.calendar .table-row-cell {
+	-fx-table-cell-border-color: transparent;
+}
+
+.calendar .table-cell {
+	-fx-border-color: derive(-fx-color, 30.0%);
+	-fx-border-radius: 4.0;
+	-fx-background-radius: 4.0;
+}
+
+/* Allows background color modification of individual cells from code while preserving selection color
+ * Taken from: https://stackoverflow.com/a/39785232 */
+.calendar .table-cell:filled {
+    -fx-background-color: -fx-bill-based-background;
+}
+.calendar:row-selection .table-row-cell:selected .table-cell {
+    -fx-background-color: null;
+}
+.calendar:cell-selection .table-cell:selected {
+    -fx-background-color: -fx-table-cell-border-color, -fx-background;
+}
+/* ---- */
+
+.calendar-header {
+	-fx-background-color: -fx-color;
+}
+
+.calendar-header > .label {
+	-fx-text-fill: white;
+	-fx-font-size: 18.0;
+	-fx-font-weight: bold;
+}
+
+.calendar-header > .button {
+	-fx-font-size: 20.0;
+	-fx-font-weight: bold;
+	-fx-background-color: -fx-color;
+	-fx-background-radius: 30.0;
+}
+
+.uncollapsable-titled-pane > .title:hover {
+	-fx-color: -fx-base;
+}
+
+.nav-titled-pane > .title {
+    -fx-background-color: -fx-color;
+}
+
+.chart-title {
+    -fx-font-size: 1.0em;
+}
+
+.chart-pie-label { 
+    -fx-fill: -fx-text-background-color;
+    -fx-font-size: 12.0;
+    -fx-max-width: 50;
+    -fx-min-width: 50;
+    -fx-pref-width: 50;
+    -fx-width: 50;
+} 
+
+.data0.chart-pie { -fx-pie-color: CHART_COLOR_1; }
+.data1.chart-pie { -fx-pie-color: CHART_COLOR_2; }
+.data2.chart-pie { -fx-pie-color: CHART_COLOR_3; }
+.data3.chart-pie { -fx-pie-color: CHART_COLOR_4; }
+.data4.chart-pie { -fx-pie-color: CHART_COLOR_5; }
+.data5.chart-pie { -fx-pie-color: CHART_COLOR_6; }
+.data6.chart-pie { -fx-pie-color: CHART_COLOR_7; }
+.data7.chart-pie { -fx-pie-color: CHART_COLOR_8; }
+

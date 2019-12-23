@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+	<Properties>
+		<Property name="APPDATA">${sys:user.home}</Property>
+	</Properties>
+
+	<Appenders>
+		<Console
+			name="console"
+			target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} %-5p [%t] &lt;%c{1}&gt; %m%n" />
+		</Console>
+
+		<RollingFile
+			name="file"
+			fileName="${env:APPDATA}/Altline/Unistat/logs/app.log"
+			filePattern="${env:APPDATA}/Altline/Unistat/logs/app_%d{yyyy-MM-dd}_%i.log"
+			immediateFlush="true"
+			append="true">
+			<PatternLayout
+				pattern="%d{yyy-MM-dd HH:mm:ss.SSS} %-5level [%t] &lt;%c{1}&gt; %msg%n" />
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<Root level="ALL">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="file" level="INFO" />
+		</Root>
+	</Loggers>
+
+</Configuration>

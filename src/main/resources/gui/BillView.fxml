@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root fx:id="detailsPane" type="VBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="lblDateTime" text="Vrijeme izdaje: " />
+      <Label fx:id="lblSource" text="Mjesto izdaje: " />
+      <Label fx:id="lblTotalCost" text="Iznos računa: " />
+      <Label fx:id="lblTotalSubsidy" text="Iznos subvencije: " />
+      <Label fx:id="lblTotalArticles" text="Broj artikala: " />
+      <TableView fx:id="articlesTable" fixedCellSize="27.0" maxHeight="-Infinity" minHeight="-Infinity" minWidth="200.0" prefHeight="212.0">
+         <columns>
+            <TableColumn fx:id="articleNameCol" editable="false" minWidth="100.0" prefWidth="-1.0" text="Artikl" />
+            <TableColumn fx:id="articleAmountCol" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" text="Količina" />
+            <TableColumn fx:id="articlePriceCol" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" text="Cijena" />
+            <TableColumn fx:id="articleSubsidyCol" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Subvencija" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
+      </TableView>
+      <PieChart fx:id="costChart" style="-fx-background-color: -fx-background;" title="Iznos po artiklu" VBox.vgrow="ALWAYS" />
+   </children>
+   <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+   </padding>
+</fx:root>

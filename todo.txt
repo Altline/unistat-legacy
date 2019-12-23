@@ -1,0 +1,30 @@
+
+- total bills
+- total articles bought
+- overall cost
+- overall subsidy
+- available funds & fund info
+- spent today
+- 
+
+
+PER BILL
+- entry count summary
+
+PER ARTICLE
+- total amount
+- total cost
+- source chart
+
+CHARTS
+- bill cost
+- article amount
+- 
+
+- bill source chart
+
+- article pie chart
+- 
+
+
+- calendar with spending intensity

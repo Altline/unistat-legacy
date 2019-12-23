@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.StackedBarChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="altline.unistat.gui.GuiArticleStats">
+   <center>
+      <SplitPane dividerPositions="0.7" BorderPane.alignment="CENTER">
+        <items>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+              <items>
+                  <VBox>
+                     <children>
+                        <StackedBarChart fx:id="articleCostChart" categoryGap="1.0" minHeight="200.0">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis prefWidth="35.0" side="LEFT" />
+                          </yAxis>
+                        </StackedBarChart>
+                        <BarChart fx:id="articleAmountChart" barGap="1.0" categoryGap="1.0" minHeight="200.0">
+                           <xAxis>
+                              <CategoryAxis side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis prefWidth="35.0" side="LEFT" />
+                           </yAxis>
+                        </BarChart>
+                     </children>
+                  </VBox>
+                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                     <content>
+                        <HBox>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <GridPane hgap="10.0" style="-fx-border-color: -fx-color; -fx-border-width: 0 2 2 0;" vgap="3.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="50.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Kupljena količina:" />
+                                          <Label text="Ukupna vrijednost:" GridPane.rowIndex="1" />
+                                          <Label text="Vrijednost bez subvencije:" GridPane.rowIndex="2" />
+                                          <Label text="Iznos subvencije:" GridPane.rowIndex="3" />
+                                          <Label fx:id="lblAmount" text="0" GridPane.columnIndex="1" />
+                                          <Label fx:id="lblCost" text="0,00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label fx:id="lblNoSubsidyCost" text="0,00" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label fx:id="lblSubsidy" text="0,00" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </GridPane>
+                                 </children>
+                              </VBox>
+                              <PieChart fx:id="sourceChart" labelLineLength="14.0" title="Odaberi artikl ➜" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </content>
+                  </ScrollPane>
+              </items>
+            </SplitPane>
+            <TableView fx:id="articlesTable" prefHeight="200.0" prefWidth="200.0">
+              <columns>
+                <TableColumn fx:id="articleNameCol" editable="false" minWidth="200.0" prefWidth="-1.0" text="Artikl" />
+                <TableColumn fx:id="articleAmountCol" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" text="Količina" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>
