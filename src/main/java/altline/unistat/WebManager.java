@@ -411,7 +411,6 @@ final class WebManager {
 						if (shouldAdd) {
 							bills.add(bill);
 							updateMessage("Preuzeto računa: " + c);
-							updateProgress(c, totalBills);
 						} else LOGGER.info("Skipping bill {}", c);
 					}
 
