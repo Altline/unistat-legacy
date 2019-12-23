@@ -1,4 +1,11 @@
 UniStat  -  Changelog
 
+ [1.0.10] - 2019-12-23
+ 	- Updated the data fetch algorithm to support the new website
+ 	- Fixed monthly bill value chart not showing the current month
+ 	- Auto-login no longer disables immediately after it fails. It updates after the user submits the next login
+ 	- The bill-fetch progress bar no longer tracks the percentage of fetched bills (it was inaccurate)
+ 	- Changed the color of the selected day in the calendar to better stand out. It no longer changes based on focus
+
  [1.0.0] - 2019-08-26
  	- First released version
