@@ -286,11 +286,7 @@ public final class UserManager {
 		}
 
 		while (!loggedIn) {
-			// disable auto login if it failed
-			if (isAutoLogin()) {
-				LOGGER.warn("Auto-login failed. Disabling the feature");
-				disableAutoLogin();
-			}
+			if (isAutoLogin()) LOGGER.warn("Auto-login failed");
 
 			try {
 				GuiLogin loginGui = (GuiLogin) App.uiManager.getPrompt(UIManager.LOGIN_FORM_ID);
@@ -316,6 +312,7 @@ public final class UserManager {
 				loggedIn = login(userID, password);
 
 				if (loggedIn && remember) enableAutoLogin(userID, password);
+				else if(isAutoLogin()) disableAutoLogin();
 
 			} catch (IOException e) {
 				Alerts.catching("Greška pri otvaranju izbornika", e, LOGGER);
