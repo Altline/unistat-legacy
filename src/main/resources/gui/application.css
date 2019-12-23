@@ -468,7 +468,7 @@ is being used to size a border should also be in pixels.
     -fx-background-color: null;
 }
 .calendar:cell-selection .table-cell:selected {
-    -fx-background-color: -fx-table-cell-border-color, -fx-background;
+    -fx-background-color: -fx-table-cell-border-color, -fx-color;
 }
 /* ---- */
 
