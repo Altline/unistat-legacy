@@ -7,6 +7,8 @@ public class UserData {
 	
 	private final String userID;
 	private String fullName;
+	private String institution;
+	private String privilege;
 	private float availableFunds;
 	private List<Bill> bills;
 	
@@ -23,10 +25,26 @@ public class UserData {
 		return fullName;
 	}
 	
+	public String getInstitution() {
+		return institution;
+	}
+	
+	public String getPrivilege() {
+		return privilege;
+	}
+	
 	public float getAvailableFunds() {
 		return availableFunds;
 	}
 	
+	
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+	
+	public void setPrivilege(String privilege) {
+		this.privilege = privilege;
+	}
 	
 	public void setAvailableFunds(float availableFunds) {
 		this.availableFunds = availableFunds;

@@ -40,7 +40,7 @@ public final class UIManager {
 		return INSTANCE;
 	}
 
-	public static final DateTimeFormatter SERVER_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy. H:mm:ss");
+	public static final DateTimeFormatter SERVER_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy. H:mm");
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy. | H:mm:ss");
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy.");
 	public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm:ss");

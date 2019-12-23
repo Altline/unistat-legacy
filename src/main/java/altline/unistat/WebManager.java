@@ -14,6 +14,7 @@ import javax.security.auth.login.FailedLoginException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
@@ -37,21 +38,24 @@ final class WebManager {
 	}
 
 	/**
-	 * This is only the beginning part of the URL for the base page. A real base URL should have additional characters
-	 * appended to this string
+	 * The base URL for the website
 	 */
-	private static final String GENERIC_URL_BASE = "https://issp.srce.hr/Student";
+	private static final String URL_BASE = "https://issp.srce.hr/";
+	/**
+	 * The URL for the logged-in student
+	 */
+	private static final String URL_STUDENT = "https://issp.srce.hr/Student";
 	/**
 	 * This is only the beginning part of the URL for the bills page. A real bills URL should have additional characters
 	 * appended to this string
 	 */
-	private static final String GENERIC_URL_BILLS = "https://issp.srce.hr/StudentRacun";
+	private static final String GENERIC_URL_BILLS = "https://issp.srce.hr/PretragaStudenta/StudentRacuni";
 	/**
 	 * This is only the beginning part of a login URL. A real login URL will have additional characters appended to this
 	 * string
 	 */
 	private static final String GENERIC_URL_LOGIN = "https://login.aaiedu.hr/sso/module.php/core/loginuserpass.php";
-	private static final String URL_LOGOUT = "https://issp.srce.hr/KorisnickiRacun/Odjava";
+	private static final String URL_LOGOUT = "https://issp.srce.hr/Account/Odjava";
 
 	private static final DecimalFormat FLOAT_FORMAT;
 
@@ -68,11 +72,11 @@ final class WebManager {
 	private String loggedUserId;
 	private String loginFailMessage = "";
 
-	private String urlBase;
 	private String urlBills;
 
 	void start() {
-		webClient = new WebClient();
+		webClient = new WebClient(BrowserVersion.INTERNET_EXPLORER); // IE doesn't throw js exceptions when fetching
+		webClient.getOptions().setThrowExceptionOnScriptError(false);
 	}
 
 	void stop() {
@@ -140,7 +144,6 @@ final class WebManager {
 
 		loggedIn = false;
 		loggedUserId = "";
-		urlBase = null;
 		urlBills = null;
 	}
 
@@ -163,7 +166,7 @@ final class WebManager {
 		logout();
 
 		LOGGER.info("Logging on the webserver...");
-		String result = connect(GENERIC_URL_BASE);
+		String result = connect(URL_STUDENT);
 		if (!result.startsWith(GENERIC_URL_LOGIN)) throw new IOException("Unexpected webserver response");
 
 		HtmlForm loginForm = currentPage.getFormByName("f");
@@ -175,17 +178,14 @@ final class WebManager {
 		passwordInput.type(password);
 
 		String loginResponse = setCurrent(submitInput.click());
+		webClient.waitForBackgroundJavaScript(5000);
 
-		if (loginResponse.startsWith(GENERIC_URL_BASE)) {
+		if (loginResponse.startsWith(URL_BASE)) {
 			LOGGER.info("Login successful");
 
 			loggedIn = true;
 			loggedUserId = userID;
-			urlBase = loginResponse;
 			loginFailMessage = "";
-
-			String href = currentPage.querySelector(".btn-primary").getAttributes().getNamedItem("href").getTextContent();
-			urlBills = GENERIC_URL_BILLS.concat(href.substring(href.indexOf('?')));
 
 		} else if (loginResponse.startsWith(GENERIC_URL_LOGIN)) {
 			DomNode errorMsgContainer = currentPage.querySelector(".aai_messages_container");
@@ -196,23 +196,6 @@ final class WebManager {
 
 		} else throw new IOException("Unexpected webserver response");
 	}
-
-	/*private void saveCookies() {
-		LOGGER.debug("Saving cookies");
-		App.ioManager.writeObject(webClient.getCookieManager().getCookies(), App.ioManager.getPath(IOManager.F_COOKIE_STORE));
-	}
-	
-	private void loadCookies() {
-		LOGGER.debug("Loading cookies");
-		Path cookiesFile = App.ioManager.getPath(IOManager.F_COOKIE_STORE);
-		if (Files.exists(cookiesFile)) {
-			@SuppressWarnings("unchecked")
-			Set<Cookie> cookies = (Set<Cookie>) App.ioManager.readObject(cookiesFile);
-			for (Cookie cookie : cookies) {
-				webClient.getCookieManager().addCookie(cookie);
-			}
-		}
-	}*/
 
 	/**
 	 * Connects to the specified URL ensuring that the user is logged on the webserver.
@@ -254,7 +237,9 @@ final class WebManager {
 	 */
 	private String connect(String url) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		LOGGER.info("Connecting to {}", url);
-		return setCurrent(webClient.getPage(url));
+		String current = setCurrent(webClient.getPage(url));
+		webClient.waitForBackgroundJavaScript(5000);
+		return current;
 	}
 
 	private String setCurrent(HtmlPage page) {
@@ -262,12 +247,29 @@ final class WebManager {
 		return getCurrentUrl();
 	}
 
+	/*private void saveCookies() {
+		LOGGER.debug("Saving cookies");
+		App.ioManager.writeObject(webClient.getCookieManager().getCookies(), App.ioManager.getPath(IOManager.F_COOKIE_STORE));
+	}
+	
+	private void loadCookies() {
+		LOGGER.debug("Loading cookies");
+		Path cookiesFile = App.ioManager.getPath(IOManager.F_COOKIE_STORE);
+		if (Files.exists(cookiesFile)) {
+			@SuppressWarnings("unchecked")
+			Set<Cookie> cookies = (Set<Cookie>) App.ioManager.readObject(cookiesFile);
+			for (Cookie cookie : cookies) {
+				webClient.getCookieManager().addCookie(cookie);
+			}
+		}
+	}*/
+
 
 	private class DataFetchTask extends Task<UserData> {
 
 		@Override
 		protected UserData call() throws FailedLoginException, FailingHttpStatusCodeException, IOException {
-			
+
 			final User mainUser = App.userManager.getUser();
 			if (mainUser == null) throw new IllegalStateException("No user is logged on the application");
 
@@ -275,8 +277,7 @@ final class WebManager {
 			updateTitle("Preuzimanje podataka");
 
 			// If somehow there is a user change and we have the wrong user logged on the server, we log out so the
-			// correct
-			// user logs in later
+			// correct user logs in later
 			if (!mainUser.getUserID().equals(loggedUserId)) {
 				LOGGER.warn("Logged-in user mismatch between server and application!");
 				logout();
@@ -304,15 +305,27 @@ final class WebManager {
 
 		private boolean fetchGeneralData(UserData userData) throws FailedLoginException, FailingHttpStatusCodeException, IOException {
 			boolean success = true;
-			String resultUrl = connectLoggedIn(urlBase);
+			String resultUrl = connectLoggedIn(URL_STUDENT);
 
-			if (resultUrl.startsWith(GENERIC_URL_BASE)) {
+			if (resultUrl.startsWith(URL_STUDENT)) {
 				try {
-					DomNode node_fullName = currentPage.querySelector(".col-md-4 > h3:nth-child(1) > strong:nth-child(1)");
+					DomNode node_testimonialCard = currentPage.querySelector(".testimonial-card");
+
+					DomNode node_fullName = node_testimonialCard.getFirstByXPath(".//div[3]/h4");
 					userData.setFullName(node_fullName.asText());
 
-					DomNode node_availableFunds = currentPage.querySelector("div.col-md-2:nth-child(4) > p:nth-child(8)");
-					userData.setAvailableFunds(FLOAT_FORMAT.parse(node_availableFunds.getLastChild().asText()).floatValue());
+					DomNode node_institution = node_testimonialCard.getFirstByXPath(".//div[3]/h5");
+					userData.setInstitution(node_institution.asText());
+
+					DomNode node_privilege = node_testimonialCard.getFirstByXPath(".//div[3]/div[1]/div[1]/p[2]");
+					userData.setPrivilege(node_privilege.asText());
+
+					DomNode node_availableFunds = node_testimonialCard.getFirstByXPath(".//div[3]/div[1]/div[2]/p[2]");
+					final String fundsRaw = node_availableFunds.asText();
+					userData.setAvailableFunds(FLOAT_FORMAT.parse(fundsRaw.substring(0, fundsRaw.lastIndexOf(" "))).floatValue());
+
+					String href = ((DomNode) node_testimonialCard.getFirstByXPath(".//div[3]/a")).getAttributes().getNamedItem("href").getTextContent();
+					urlBills = GENERIC_URL_BILLS.concat(href.substring(href.indexOf('?')));
 
 				} catch (ParseException e) {
 					LOGGER.warn("Parse exception on data fetch", e);
@@ -328,11 +341,13 @@ final class WebManager {
 		}
 
 		private boolean fetchBills(UserData userData) throws FailedLoginException, FailingHttpStatusCodeException, IOException {
+			if (urlBills == null || urlBills.isEmpty()) throw new IllegalStateException("'urlBills' is unknown. Cannot fetch bills");
+
 			boolean success = true;
 			String resultUrl = connectLoggedIn(urlBills);
 
 			if (resultUrl.startsWith(GENERIC_URL_BILLS)) {
-				final DomNodeList<DomNode> billRows = currentPage.querySelectorAll(".table > tbody:nth-child(1) > tr:nth-child(n+2)");
+				final DomNodeList<DomNode> billRows = currentPage.querySelectorAll(".table > tbody:nth-child(2) > tr");
 				final int totalBills = billRows.getLength();
 				int c = 0;
 
@@ -347,51 +362,53 @@ final class WebManager {
 						DomNodeList<DomNode> cells = row.querySelectorAll("td");
 
 						String source = cells.get(0).asText();
-						LocalDateTime dateTime = LocalDateTime.parse(cells.get(1).asText(), UIManager.SERVER_DATE_TIME_FORMATTER);
+						String date = cells.get(1).asText();
+						String time = cells.get(2).asText();
+						LocalDateTime dateTime = LocalDateTime.parse(date + ". " + time, UIManager.SERVER_DATE_TIME_FORMATTER);
 
 						Bill bill = new Bill(dateTime, source);
 
 						LOGGER.debug("Pulling bill details {}/{}", c, totalBills);
 
-						HtmlAnchor detailsBtn = (HtmlAnchor) cells.get(4).querySelector("a");
+						HtmlAnchor detailsBtn = (HtmlAnchor) cells.get(6).querySelector("a");
 						HtmlPage detailsPage = detailsBtn.click();
 
-						int stillExec = webClient.waitForBackgroundJavaScript(3000);
+						int stillExec = webClient.waitForBackgroundJavaScript(5000);
 						if (stillExec > 0) {
 							LOGGER.warn("Background javascript still executing after timeout (count: {})" + stillExec);
 							success = false;
 						}
 
-						DomNodeList<DomNode> detailRows = detailsPage.querySelectorAll("div.cap-racun-stavke-modal-body > table > tbody > tr:nth-child(n+2)");
+						DomNodeList<DomNode> detailRows = detailsPage.querySelectorAll(".table > tbody:nth-child(2) > tr:nth-last-child(n+2)");
 						for (DomNode detailRow : detailRows) {
 
 							DomNodeList<DomNode> detailCells = detailRow.querySelectorAll("td");
 
-							String articleName = detailCells.get(1).asText();
+							String articleName = detailCells.get(0).asText();
+							int amount = Integer.parseInt(detailCells.get(1).asText());
 							float articlePrice = FLOAT_FORMAT.parse(detailCells.get(2).asText()).floatValue();
-							int amount = Integer.parseInt(detailCells.get(3).asText());
-							float subsidy = FLOAT_FORMAT.parse(detailCells.get(5).asText()).floatValue();
+							float subsidy = FLOAT_FORMAT.parse(detailCells.get(4).asText()).floatValue();
 
 							bill.addEntry(articleName, articlePrice, amount, subsidy);
 						}
 
 						boolean shouldAdd = true;
 						boolean shouldStop = false;
-						for(Bill existingBill : App.userManager.getUser().getBills()) {
-							if(bill.equals(existingBill)) {
+						for (Bill existingBill : App.userManager.getUser().getBills()) {
+							if (bill.equals(existingBill)) {
 								shouldStop = true;
-								
-							} else if(bill.isSameTimePlace(existingBill) && existingBill.isEdited()) {
+
+							} else if (bill.isSameTimePlace(existingBill) && existingBill.isEdited()) {
 								shouldAdd = false;
 							}
 						}
-						
-						if(shouldStop) {
+
+						if (shouldStop) {
 							LOGGER.debug("Reached end of fresh bills. Stopping bill fetch");
 							break;
 						}
 
-						if(shouldAdd) {
+						if (shouldAdd) {
 							bills.add(bill);
 							updateMessage("Preuzeto računa: " + c);
 							updateProgress(c, totalBills);
