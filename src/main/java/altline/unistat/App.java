@@ -221,8 +221,6 @@ public class App extends Application {
 								LOGGER.warn("", e);
 							}
 						}
-						
-						//execute(webManager.fetchData());
 
 						try {
 							uiManager.showPrimaryStage();

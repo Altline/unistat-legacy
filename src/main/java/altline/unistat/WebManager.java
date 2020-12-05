@@ -20,10 +20,10 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 import altline.utils.Alerts;
@@ -49,7 +49,7 @@ final class WebManager {
 	 * This is only the beginning part of the URL for the bills page. A real bills URL should have additional characters
 	 * appended to this string
 	 */
-	private static final String GENERIC_URL_BILLS = "https://issp.srce.hr/PretragaStudenta/StudentRacuni";
+	private static final String GENERIC_URL_BILLS = "https://issp.srce.hr/Student/StudentRacuni";
 	/**
 	 * This is only the beginning part of a login URL. A real login URL will have additional characters appended to this
 	 * string
@@ -172,7 +172,7 @@ final class WebManager {
 		HtmlForm loginForm = currentPage.getFormByName("f");
 		HtmlTextInput usernameInput = loginForm.getInputByName("username");
 		HtmlPasswordInput passwordInput = loginForm.getInputByName("password");
-		HtmlSubmitInput submitInput = loginForm.getInputByName("Submit");
+		HtmlButton submitInput = loginForm.getButtonByName("Submit");
 
 		usernameInput.type(userID);
 		passwordInput.type(password);
